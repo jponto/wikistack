@@ -14,7 +14,7 @@ const Page = db.define('pages', {
     allowNull: false,
   },
   content: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: false,
   },
   status: {
@@ -33,6 +33,10 @@ const User = db.define('users', {
       isEmail: true,
     },
   },
+});
+
+Page.beforeValidate((page) => {
+  page.slug = page.title.replace(/[\W_]/g, '_');
 });
 
 module.exports = {
