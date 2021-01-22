@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 //Sync database + connect to port
 const init = async function () {
-  await db.sync({ force: true });
+  await db.sync({});
   app.listen('1234', function () {
     console.log('connected!');
   });

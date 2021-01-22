@@ -1,8 +1,8 @@
 const express = require('express');
 const wikiRouter = express.Router();
-const wikiPage = require('../views/wikipage');
 const { Page } = require('../models'); //implicitly imports from index
 const { addPage } = require('../views'); //implicitly imports from index
+const { wikiPage } = require('../views');
 
 //retrieve information from database
 wikiRouter.get('/', (req, res) => {
@@ -24,7 +24,7 @@ wikiRouter.post('/', async (req, res) => {
       content: content,
     });
     // make sure we only redirect *after* our save is complete! Don't forget to `await` the previous step. `create` returns a Promise.
-    res.redirect('/');
+    res.redirect(`/wiki/${page.slug}`);
   } catch (error) {
     next(error);
   }
@@ -34,6 +34,15 @@ wikiRouter.get('/add', (req, res) => {
   res.send(addPage());
   //return the add page eventually
   //code here
+});
+
+//get a single page
+wikiRouter.get('/:slug', async (req, res, next) => {
+  const pageData = await Page.findOne({
+    where: { slug: req.params.slug },
+  });
+  const pageHTML = wikiPage(pageData);
+  res.send(pageHTML);
 });
 
 module.exports = wikiRouter;
